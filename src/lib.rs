@@ -29,6 +29,8 @@ use nom::number::complete::{be_u16, be_u32, be_u8};
 use nom::sequence::tuple;
 use nom::IResult;
 
+use memmap2::Mmap;
+
 #[derive(Debug)]
 pub struct MrtHeader {
     pub timestamp: u32,
@@ -671,6 +673,18 @@ pub fn read_file_complete(file: File) -> Result<Vec<MrtEntry>, &'static str> {
         Err(_) => Err("Something went wrong!"),
     }
 }
+
+pub fn mmap_file(file: File) -> Result<Vec<MrtEntry>, &'static str> {
+
+    let contents = unsafe { Mmap::map(&file).unwrap() };
+    let result = mrt_file(&contents[..]);
+
+    match result {
+        Ok(v) => Ok(v.1),
+        Err(_) => Err("Something went wrong!"),
+    }
+}
+
 
 /// This struct makes it possible to read an MRT file iteratively
 ///

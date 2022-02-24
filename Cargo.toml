@@ -10,3 +10,4 @@ license-file = "LICENSE"
 
 [dependencies]
 nom = "6"
+memmap2 = "0.5.3"
